@@ -1,41 +1,26 @@
 ### Description
-The aim of this unix package is to investigate the contribution of epigenome-proteome biomarker pairs listed in our manuscript to a phenotype. Below, we describe each script and their use. Users can edit the scripts to meet their requirements.
+The aim of this unix package is to investigate the contribution of epigenome-metabolome biomarker pairs listed in our manuscript to a phenotype. Below, we describe each script and their use. Users can edit the scripts to meet their requirements.
 
 The entire package can be obtained from [here](https://zenodo.org/record/6420589)
 
 It can be accessed as:
 ```
-unzip epiproteomics_package.zip
+unzip epimetabolimics.zip
 
-chmod -R 700 ./epiproteomics_package
+chmod -R 700 ./epimetabolimics
 
-cd ./epiproteomics_package
+cd ./epimetabolimics
 ```
-The first step is to obtain GWAS data for the phenotype of interest from the OpenGWAS db. This can be done by passing its phenotype ID (from OpenGWAS db) to the first script. e.g.
+A search can be initiated by passing IDs for the metabolite and the trait of interest from the OpenGWAS db to the main script, example:
 ```
-bash obtain_gwas_data_p1.sh ebi-a-GCST010780
+bash wrapper.sh met-d-Total_FA ieu-b-30
 ```
-In the above example, the script downloads the GWAS data for SARS-COV-2 and prepares it in a format that is required by the second script. 
+In the above example, the script downloads the GWAS data for fatty acid levels (met-d-Total_FA) and ieu-b-30 (WBC) from the OpenGWAS database. It then conducts the analysis and generated the following table:
 
-The second script examines the association of the identified biomarkers (probes) with the phenotype of interest using Mendelian randomization, you can conduct a comprehensive search as:
+| Exposure       | Outcome        | B         | SE         | P           | NSNP |
+|----------------|----------------|-----------|------------|-------------|------|
+| met-d-Total_FA | ieu-b-30       | 0.0435109 | 0.00604778 | 6.26749e-13 | 93   |
+| cg12568669     | ieu-b-30       | 0.0191075 | 0.0016652  | 1.76965e-30 | 55   |
+| cg12568669     | met-d-Total_FA | 0.0307653 | 0.0034964  | 1.3789e-18  | 56   |
 
-```
-while read line; do echo $line;bash mr_analysis_p2.sh $line phenotype_ID; done < probe.list
-```
-or subset the probe.list file to test a number of probes.
-
-If you are using a computing cluster, you can replace the bash command with an equivalent command (e.g. sbatch) to submit jobs to the cluster.
-
-
-The final script examines the results from the MR analysis (stored in phenotype ID.table file) and prepares the output file (named as phenotype ID.biomarker.pairs) which describes the nature of associations between biomarkers and the phenotype. 
-
-```
-while read line; do echo $line;bash generate_output_p3.sh $line phenotype_name; done < probe.pairs
-```
-Example of an output file that points higher methylation at ABO locus (measured by cg22535403 probe) contributes to severity of SARS-COV-2 infection by increasting the level of ABO protein (measured by ABO.9253.52.3 probe).
-
-|Methylation_probe|Trait           |B        |SE       |P       |NSNP|Protein_probe|Trait           |B       |SE        |P       |NSNP|
-|-----------------|----------------|---------|---------|--------|----|-------------|----------------|--------|----------|--------|----|
-|cg22535403       |ebi-a-GCST010780|0.06|0.01|6.6E-09|9   |ABO.9253.52.3|ebi-a-GCST010780|0.06|0.01|7.0E-11|23 |
-
-In the above table, the first six columns describe the nature of association between the methylation probe and the phenotype. The remaining columns describe the association between the protein probe and the phenotype. The sign of effect size (B) indicates the direction of association (i.e. a positive beta indicates higher level of the probe is associated with higher level/risk of the phenotype), SE indicates standard error, P indicates p-value, NSNP indicates the number of SNPs in the instrument used to examine the association between the probe and the phenotype.
+Which describes the nature of association between biomarkers and the trait. The sign of effect size (B) indicates the direction of association (i.e. a positive beta indicates higher level of the exposure is associated with higher level of the outcome), SE indicates standard error, P indicates p-value, NSNP indicates the number of SNPs in the instrument used to examine the association between the exposure and the probe.
