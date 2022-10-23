@@ -19,7 +19,7 @@ In the above example, the script downloads the GWAS data for fatty acid levels (
 
 | Exposure       | Outcome        | B         | SE         | P           | NSNP |
 |----------------|----------------|-----------|------------|-------------|------|
-| met-d-Total_FA | ieu-b-30       | 0.04 | 0.006 | 6.3-13 | 93   |
+| met-d-Total_FA | ieu-b-30       | 0.04 | 0.006 | 6.3e-13 | 93   |
 | cg12568669     | ieu-b-30       | 0.02 | 0.002  | 1.8e-30 | 55   |
 | cg12568669     | met-d-Total_FA | 0.03 | 0.003  | 1.4e-18  | 56   |
 
